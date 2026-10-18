@@ -1,0 +1,164 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T2A]{fontenc} 
+\usepackage[russian]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{patterns, arrows.meta}
+
+\usepackage[left=3cm, right=1.5cm, top=2cm, bottom=2cm]{geometry}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{1em}
+
+\begin{document}
+
+\section{Математическая постановка задачи}
+
+Рассматривается одномерная неустановившаяся фильтрация упругой жидкости в пористой среде.
+
+В основе математической модели лежат закон Дарси и уравнение сохранения массы.
+
+Закон Дарси в одномерном случае имеет вид:
+\begin{equation}
+    v = -\frac{k}{\mu} \frac{\partial p}{\partial x},
+\end{equation}
+где \(v\) — скорость фильтрации, \(k\) — проницаемость породы, \(\mu\) — вязкость жидкости, \(p\) — давление.
+
+\begin{figure}[htbp]
+    \centering
+    \begin{tikzpicture}[>=Stealth, thick, scale=0.85, transform shape]
+        % Основной цилиндр
+        \draw (0,0) rectangle (8, 3);
+        
+        % Ось x
+        \draw[->] (1, 1.5) -- (4, 1.5) node[midway, above] {\(x\)};
+        
+        % Длина L
+        \draw[<->] (0, 3.8) -- (8, 3.8) node[midway, above] {\(L\)};
+        \draw[dashed] (0,3) -- (0,3.8);
+        \draw[dashed] (8,3) -- (8,3.8);
+        
+        % Элементарный объем (штриховка)
+        \draw[pattern=crosshatch, pattern color=black] (4.5,0) rectangle (5.5,3);
+        
+        % Дельта x
+        \draw[<->] (4.5, -0.6) -- (5.5, -0.6) node[midway, below] {\(\Delta x\)};
+        \draw[dashed] (4.5,0) -- (4.5,-0.6);
+        \draw[dashed] (5.5,0) -- (5.5,-0.6);
+        
+        % Подпись к элементу (выносим наружу)
+        \draw (5.5, 0.5) -- (6.8, -0.6) node[right, align=left] {Элементарный\\объем};
+        
+        % Стрелки притока (слева)
+        \draw[->] (-1.5, 0.5) -- (0, 0.5);
+        \draw[->] (-1.5, 1.5) -- (0, 1.5);
+        \draw[->] (-1.5, 2.5) -- (0, 2.5);
+        \node[left] at (-1.5, 1.5) {Приток};
+        
+        % Стрелки оттока (справа)
+        \draw[->] (8, 0.5) -- (9.5, 0.5);
+        \draw[->] (8, 1.5) -- (9.5, 1.5);
+        \draw[->] (8, 2.5) -- (9.5, 2.5);
+        \node[right] at (9.5, 1.5) {Отток};
+    \end{tikzpicture}
+    \caption{Схема линейной фильтрации в цилиндрическом образце длины \(\Delta x\)}
+    \label{fig:scheme}
+\end{figure}
+
+Уравнение сохранения массы:
+\begin{equation}
+    \frac{\partial (\rho \phi)}{\partial t} + \frac{\partial (\rho v)}{\partial x} = - \tilde{q},
+\end{equation}
+где \(\tilde{q}\) — убывание массы в единице объема в единицу времени (положительно при отборе и отрицательно при нагнетании).
+
+Подставим закон Дарси в уравнение сохранения массы:
+\begin{equation}
+    \frac{\partial (\rho \phi)}{\partial t} = \frac{\partial}{\partial x} \left( \rho \frac{k}{\mu} \frac{\partial p}{\partial x} \right) - \tilde{q}.
+\end{equation}
+
+Для вывода уравнения пьезопроводности используем линеаризованное уравнение состояния упругой жидкости и соотношение, описывающее изменение пористости в зависимости от давления:
+\begin{equation}
+    \rho = \rho^0 [1 + c_f (p - p^0)], \quad \phi = \phi^0 [1 + c_R (p - p^0)],
+\end{equation}
+где \(c_f\) и \(c_R\) — сжимаемости жидкости и породы, \(\rho^0\) и \(\phi^0\) — значения при начальном давлении \(p^0\).
+
+Тогда производные по времени равны:
+\begin{equation}
+    \frac{\partial \rho}{\partial t} = \rho^0 c_f \frac{\partial p}{\partial t}, \quad \frac{\partial \phi}{\partial t} = \phi^0 c_R \frac{\partial p}{\partial t}.
+\end{equation}
+
+Раскроем производную в левой части уравнения:
+\begin{equation}
+    \frac{\partial (\rho \phi)}{\partial t} = \phi \frac{\partial \rho}{\partial t} + \rho \frac{\partial \phi}{\partial t}.
+\end{equation}
+Подставим уравнения состояния в раскрытую производную:
+\begin{equation}
+    \frac{\partial (\rho \phi)}{\partial t} = \phi^0 [1 + c_R (p - p^0)] \cdot \rho^0 c_f \frac{\partial p}{\partial t} + \rho^0 [1 + c_f (p - p^0)] \cdot \phi^0 c_R \frac{\partial p}{\partial t}.
+\end{equation}
+
+Вынесем общий множитель \(\rho^0 \phi^0 \frac{\partial p}{\partial t}\) и раскроем скобки:
+\begin{equation}
+    \frac{\partial (\rho \phi)}{\partial t} = \rho^0 \phi^0 [c_f + c_f c_R (p - p^0) + c_R + c_f c_R (p - p^0)] \frac{\partial p}{\partial t}.
+\end{equation}
+
+Приведем подобные слагаемые:
+\begin{equation}
+    \frac{\partial (\rho \phi)}{\partial t} = \rho^0 \phi^0 [c_f + c_R + 2 c_f c_R (p - p^0)] \frac{\partial p}{\partial t}.
+\end{equation}
+
+Так как \(c_f\) и \(c_R\) имеют порядок \(10^{-5}\) -- \(10^{-6}\), их произведение \(c_f \cdot c_R\) имеет порядок \(10^{-10}\) -- \(10^{-12}\). Пренебрегая членом \(2 c_f c_R (p - p^0)\), приходим к выражению:
+\begin{equation}
+    \frac{\partial (\rho \phi)}{\partial t} \approx \rho^0 \phi^0 (c_f + c_R) \frac{\partial p}{\partial t}.
+\end{equation}
+
+Теперь упростим правую часть. Так как сжимаемость мала, плотность в множителе перед производной по координате можно приближенно заменить на \(\rho^0\). Проницаемость \(k\) и вязкость \(\mu\) считаем постоянными:
+\begin{equation}
+    \frac{\partial}{\partial x} \left( \rho \frac{k}{\mu} \frac{\partial p}{\partial x} \right) \approx \rho^0 \frac{k}{\mu} \frac{\partial^2 p}{\partial x^2}.
+\end{equation}
+
+Приравняем упрощенные левую и правую части:
+\begin{equation}
+    \rho^0 \phi^0 (c_f + c_R) \frac{\partial p}{\partial t} = \rho^0 \frac{k}{\mu} \frac{\partial^2 p}{\partial x^2} - \tilde{q}.
+\end{equation}
+
+Разделим обе части на \(\rho^0 \phi^0 (c_f + c_R)\) и введем обозначение для коэффициента пьезопроводности:
+\begin{equation}
+    \frac{\partial p}{\partial t} = \kappa \frac{\partial^2 p}{\partial x^2} - \frac{\tilde{q}}{\rho^0 \phi^0 (c_f + c_R)},
+\end{equation}
+где
+\begin{equation}
+    \kappa = \frac{k}{\mu \phi^0 (c_f + c_R)}.
+\end{equation}
+
+Будем рассматривать случай, где \(\tilde{q} = 0\). Получаем классический вид уравнения пьезопроводности:
+
+\begin{equation}
+    \frac{\partial p}{\partial t} = \kappa \frac{\partial^2 p}{\partial x^2}.
+\end{equation}
+
+Для получения единственного решения уравнения пьезопроводности необходимо задать начальное и граничные условия.
+
+Начальное условие задает давление в начальный момент времени \(t=0\). Будем считать, что в начальный момент времени давление в пласте нулевое:
+\begin{equation}
+    p(x, 0) = 0.
+\end{equation}
+
+Граничные условия задают поведение давления на концах рассматриваемого участка, например \(x = 0\) и \(x = 1\). В теории дифференциальных уравнений выделяют три основных типа граничных условий: условие Дирихле (задается само значение искомой функции), условие Неймана (задается производная искомой функции) и условие Робена (задается линейная комбинация самого значения функции и ее производной). 
+
+В данной работе в качестве граничных используем условия первого рода (Дирихле), задающие фиксированные значения давления на границах:
+\begin{equation}
+    p(0, t) = 1, \quad p(1, t) = 0.
+\end{equation}
+
+Таким образом, итоговая математическая постановка одномерной задачи пьезопроводности принимает вид:
+\begin{equation}
+    \begin{cases}
+        \frac{\partial p}{\partial t} = \kappa \frac{\partial^2 p}{\partial x^2} & 0 < x < 1, \quad t > 0, \\
+        p(x, 0) = 0 & 0 \le x \le 1, \\
+        p(0, t) = 1, \quad p(1, t) = 0 & t > 0.
+    \end{cases}
+\end{equation}
+
+\end{document}
