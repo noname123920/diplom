@@ -7,6 +7,17 @@ p = zeros(1, Nx); p(1) = 1; p(end) = 0;
 fid = fopen('plot_data.tex', 'w');
 fprintf(fid, '\\begin{tikzpicture}[x=7cm, y=5cm, >=Stealth, thick]\n');
 fprintf(fid, '\\draw[step=0.2, gray!20, very thin] (0,0) grid (1,1);\n');
+
+fprintf(fid, '\\foreach \\x in {0.2, 0.4, 0.6, 0.8, 1} {\n');
+fprintf(fid, '  \\draw (\\x, 2pt) -- (\\x, -2pt) node[below] {\\x};\n');
+fprintf(fid, '}\n');
+
+fprintf(fid, '\\foreach \\y in {0.2, 0.4, 0.6, 0.8, 1} {\n');
+fprintf(fid, '  \\draw (2pt, \\y) -- (-2pt, \\y) node[left] {\\y};\n');
+fprintf(fid, '}\n');
+
+fprintf(fid, '\\node[below left] at (0,0) {0};\n');
+
 fprintf(fid, '\\draw[->, thick] (0,0) -- (1.15,0) node[below right] {\\(x\\)};\n');
 fprintf(fid, '\\draw[->, thick] (0,0) -- (0,1.15) node[left] {\\(p\\)};\n');
 

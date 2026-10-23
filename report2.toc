@@ -6,4 +6,5 @@
 \contentsline {section}{\numberline {3}Численные методы и программная реализация}{10}{}%
 \contentsline {section}{\numberline {4}Результаты расчётов и их анализ}{11}{}%
 \contentsline {section}{ЗАКЛЮЧЕНИЕ}{12}{}%
-\contentsline {section}{СПИСОК ЛИТЕРАТУРЫ}{13}{}%
+\contentsline {section}{ПРИЛОЖЕНИЕ}{13}{}%
+\contentsline {section}{СПИСОК ЛИТЕРАТУРЫ}{14}{}%
