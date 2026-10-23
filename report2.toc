@@ -1,0 +1,9 @@
+\babel@toc {russian}{}\relax 
+\contentsline {section}{СПИСОК ОБОЗНАЧЕНИЙ}{3}{}%
+\contentsline {section}{ВВЕДЕНИЕ}{4}{}%
+\contentsline {section}{\numberline {1}Краткий обзор литературы по теме ВКР}{6}{}%
+\contentsline {section}{\numberline {2}Математическая постановка задачи}{7}{}%
+\contentsline {section}{\numberline {3}Численные методы и программная реализация}{10}{}%
+\contentsline {section}{\numberline {4}Результаты расчётов и их анализ}{11}{}%
+\contentsline {section}{ЗАКЛЮЧЕНИЕ}{12}{}%
+\contentsline {section}{СПИСОК ЛИТЕРАТУРЫ}{13}{}%
