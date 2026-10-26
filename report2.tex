@@ -472,20 +472,25 @@ T(t)=T_0 e^{-\lambda^2 t},
 
 \(r=\pm i\dfrac{\lambda}{\sqrt{\kappa}}\).
 
-При \(\lambda>0\) и \(\kappa>0\) это два комплексно-сопряжённых корня.
-
 Общее решение запишем в виде
 \begin{equation}
-    X(x)=C_4 \cos\!\left(\frac{\lambda}{\sqrt{\kappa}}x\right)+C_5 \sin\!\left(\frac{\lambda}{\sqrt{\kappa}}x\right),
+    X(x)=C_6 \cos\!\left(\frac{\lambda}{\sqrt{\kappa}}x\right)+C_7 \sin\!\left(\frac{\lambda}{\sqrt{\kappa}}x\right),
 \end{equation}
-где \(C_4\), \(C_5\) — константы.
+где \(C_6\), \(C_7\) — константы.
 
 Следовательно, в случае отрицательной константы разделения решение записывается в виде
 \begin{equation}
-    p(x,t)=X(x)T(t)=\left(C_4 \cos\!\left(\frac{\lambda}{\sqrt{\kappa}}x\right)+C_5 \sin\!\left(\frac{\lambda}{\sqrt{\kappa}}x\right)\right)T_0 e^{-\lambda^2 t}.
+    p(x,t)=X(x)T(t)=\left(A \cos\!\left(\frac{\lambda}{\sqrt{\kappa}}x\right)+B \sin\!\left(\frac{\lambda}{\sqrt{\kappa}}x\right)\right)e^{-\lambda^2 t},
 \end{equation}
+где \(A=C_6T_0\), \(B=C_7T_0\).
 
-В отличие от случая положительной константы разделения, здесь множитель \(e^{-\lambda^2 t}\) убывает со временем, поэтому такое решение не противоречит граничным условиям и может быть использовано для построения решения задачи.
+В отличие от случая положительной константы разделения, здесь множитель \(e^{-\lambda^2 t}\) убывает со временем, поэтому такое решение не противоречит граничным условиям.
+
+Таким образом, общее решение рассматриваемой задачи складывается из стационарного решения и решения, зависящего от времени:
+\begin{equation}
+    p(x,t)=p_{\text{ст}}(x)+X(x)T(t)=1-x+\left(A \cos\!\left(\frac{\lambda}{\sqrt{\kappa}}x\right)+B \sin\!\left(\frac{\lambda}{\sqrt{\kappa}}x\right)\right)e^{-\lambda^2 t}.
+\end{equation}
+Постоянные \(A\), \(B\) и \(\lambda\) определяются из граничных и начального условий задачи.
 
 \newpage
 \section{Численные методы и программная реализация}
