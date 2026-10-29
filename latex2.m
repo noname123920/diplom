@@ -15,7 +15,7 @@ fprintf(fid, '\\foreach \\x in {0.5, 1, 1.5, 2, 2.5, 3} {\n');
 fprintf(fid, '  \\draw (\\x, 2pt) -- (\\x, -2pt) node[below] {\\x};\n');
 fprintf(fid, '}\n');
 
-fprintf(fid, '\\foreach \\y in {-1, -0.5, 0, 0.5, 1} {\n');
+fprintf(fid, '\\foreach \\y in {-1, -0.5, 0.5, 1} {\n');
 fprintf(fid, '  \\draw (2pt, \\y) -- (-2pt, \\y) node[left] {\\y};\n');
 fprintf(fid, '}\n');
 
