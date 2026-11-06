@@ -336,14 +336,14 @@
     \end{cases}
 \end{equation}
 
-Рассмотрим также вторую постановку с граничными условиями второго рода (Неймана):
-\begin{equation}
-    \begin{cases}
-        \dfrac{\partial p}{\partial t} = \kappa \dfrac{\partial^2 p}{\partial x^2}, & 0 < x < \pi, \quad t > 0, \\[6pt]
-        p(x, 0) = \cos x, & 0 \le x \le \pi, \\[4pt]
-        \dfrac{\partial p}{\partial x}(0, t) = 0, \quad \dfrac{\partial p}{\partial x}(\pi, t) = 0, & t > 0.
-    \end{cases}
-\end{equation}
+% Рассмотрим также вторую постановку с граничными условиями второго рода (Неймана):
+% \begin{equation}
+%     \begin{cases}
+%         \dfrac{\partial p}{\partial t} = \kappa \dfrac{\partial^2 p}{\partial x^2}, & 0 < x < \pi, \quad t > 0, \\[6pt]
+%         p(x, 0) = \cos x, & 0 \le x \le \pi, \\[4pt]
+%         \dfrac{\partial p}{\partial x}(0, t) = 0, \quad \dfrac{\partial p}{\partial x}(\pi, t) = 0, & t > 0.
+%     \end{cases}
+% \end{equation}
 
 % \subsection{Аналитическое решение задачи}
 
@@ -553,14 +553,11 @@
 \node[net, right=of d2] (d3) {Выходной слой\\1 нейрон};
 \node[net, right=of d3] (p)  {Выход\\$p(x,t)$};
 
-% --- 2. Средний ряд (проверки) ---
-% Располагаем их симметрично под сетью
-\node[chk, below=20mm of d1] (pde) {PDE residual\\$\frac{1}{N}\sum (p_t - \chi p_{xx})^2$};
-\node[chk, below=20mm of d2] (bc)  {BC loss\\$\frac{1}{N}\sum p(0,t)^2 + \frac{1}{N}\sum p(\pi,t)^2$};
-\node[chk, below=20mm of d3] (ic)  {IC loss\\$\frac{1}{N}\sum (p - \sin x)^2$};
+% --- 2. Средний ряд (проверки) — Только PDE по центру ---
+\node[chk, below=20mm of d2] (pde) {PDE residual\\$\frac{1}{N}\sum (p_t - \chi p_{xx})^2$};
 
 % --- 3. Нижний ряд (Loss и Adam) ---
-\node[loss, below=15mm of bc] (L) {$\mathcal{L} = \mathcal{L}_{PDE} + \mathcal{L}_{BC} + \mathcal{L}_{IC}$};
+\node[loss, below=15mm of pde] (L) {$\mathcal{L} = \mathcal{L}_{PDE}$};
 \node[opt, below=10mm of L] (opt) {Adam: обновление весов};
 
 % --- Стрелки: вход -> сеть -> выход ---
@@ -569,18 +566,11 @@
 \draw[arr] (d2) -- (d3);
 \draw[arr] (d3) -- (p);
 
-% --- ОДНА стрелка от выхода вниз к проверкам ---
-\draw[thick] (p.south) -- ++(0,-8mm) coordinate (split);
+% --- Стрелка от выхода вниз к PDE ---
+\draw[arr] (p.south) |- (pde.east);
 
-% Распределение от split к трем проверкам
-\draw[arr] (split) -| (pde.north);
-\draw[arr] (split) -| (bc.north);
-\draw[arr] (split) -| (ic.north);
-
-% --- Стрелки от проверок к Loss (сходятся в одну точку) ---
-\draw[arr] (pde.south) |- (L.west);
-\draw[arr] (bc.south) -- (L.north);
-\draw[arr] (ic.south) |- (L.east);
+% --- Стрелка от PDE к Loss ---
+\draw[arr] (pde.south) -- (L.north);
 
 % --- Стрелка: Loss -> Adam ---
 \draw[arr] (L) -- (opt);
@@ -594,67 +584,66 @@
 \label{fig:pinn_scheme}
 \end{figure}
 
+% \begin{figure}[H]
+% \centering
+% \begin{tikzpicture}[
+%     node distance=10mm and 10mm,
+%     box/.style={draw, rounded corners, align=center, minimum height=10mm, inner sep=4pt, font=\small},
+%     inp/.style={box, fill=blue!8},
+%     net/.style={box, fill=green!10},
+%     chk/.style={box, fill=orange!12},
+%     loss/.style={box, fill=red!10},
+%     opt/.style={box, fill=purple!10},
+%     arr/.style={-{Stealth[length=2.5mm]}, thick}
+% ]
 
-\begin{figure}[H]
-\centering
-\begin{tikzpicture}[
-    node distance=10mm and 10mm,
-    box/.style={draw, rounded corners, align=center, minimum height=10mm, inner sep=4pt, font=\small},
-    inp/.style={box, fill=blue!8},
-    net/.style={box, fill=green!10},
-    chk/.style={box, fill=orange!12},
-    loss/.style={box, fill=red!10},
-    opt/.style={box, fill=purple!10},
-    arr/.style={-{Stealth[length=2.5mm]}, thick}
-]
+% % --- 1. Верхний ряд (сеть) ---
+% \node[inp] (in) {Вход\\$(x,t)$};
+% \node[net, right=of in] (d1) {Слой 1\\20 нейронов, tanh};
+% \node[net, right=of d1] (d2) {Слой 2\\20 нейронов, tanh};
+% \node[net, right=of d2] (d3) {Выходной слой\\1 нейрон};
+% \node[net, right=of d3] (p)  {Выход\\$p(x,t)$};
 
-% --- 1. Верхний ряд (сеть) ---
-\node[inp] (in) {Вход\\$(x,t)$};
-\node[net, right=of in] (d1) {Слой 1\\20 нейронов, tanh};
-\node[net, right=of d1] (d2) {Слой 2\\20 нейронов, tanh};
-\node[net, right=of d2] (d3) {Выходной слой\\1 нейрон};
-\node[net, right=of d3] (p)  {Выход\\$p(x,t)$};
+% % --- 2. Средний ряд (проверки) ---
+% % Располагаем их симметрично под сетью
+% \node[chk, below=20mm of d1] (pde) {PDE residual\\$\frac{1}{N}\sum (p_t - \chi p_{xx})^2$};
+% \node[chk, below=20mm of d2] (bc)  {BC loss\\$\frac{1}{N}\sum p_x(0,t)^2 + \frac{1}{N}\sum p_x(\pi,t)^2$};
+% \node[chk, below=20mm of d3] (ic)  {IC loss\\$\frac{1}{N}\sum (p - \cos x)^2$};
 
-% --- 2. Средний ряд (проверки) ---
-% Располагаем их симметрично под сетью
-\node[chk, below=20mm of d1] (pde) {PDE residual\\$\frac{1}{N}\sum (p_t - \chi p_{xx})^2$};
-\node[chk, below=20mm of d2] (bc)  {BC loss\\$\frac{1}{N}\sum p_x(0,t)^2 + \frac{1}{N}\sum p_x(\pi,t)^2$};
-\node[chk, below=20mm of d3] (ic)  {IC loss\\$\frac{1}{N}\sum (p - \cos x)^2$};
+% % --- 3. Нижний ряд (Loss и Adam) ---
+% \node[loss, below=15mm of bc] (L) {$\mathcal{L} = \mathcal{L}_{PDE} + \mathcal{L}_{BC} + \mathcal{L}_{IC}$};
+% \node[opt, below=10mm of L] (opt) {Adam: обновление весов};
 
-% --- 3. Нижний ряд (Loss и Adam) ---
-\node[loss, below=15mm of bc] (L) {$\mathcal{L} = \mathcal{L}_{PDE} + \mathcal{L}_{BC} + \mathcal{L}_{IC}$};
-\node[opt, below=10mm of L] (opt) {Adam: обновление весов};
+% % --- Стрелки: вход -> сеть -> выход ---
+% \draw[arr] (in) -- (d1);
+% \draw[arr] (d1) -- (d2);
+% \draw[arr] (d2) -- (d3);
+% \draw[arr] (d3) -- (p);
 
-% --- Стрелки: вход -> сеть -> выход ---
-\draw[arr] (in) -- (d1);
-\draw[arr] (d1) -- (d2);
-\draw[arr] (d2) -- (d3);
-\draw[arr] (d3) -- (p);
+% % --- ОДНА стрелка от выхода вниз к проверкам ---
+% \draw[thick] (p.south) -- ++(0,-8mm) coordinate (split);
 
-% --- ОДНА стрелка от выхода вниз к проверкам ---
-\draw[thick] (p.south) -- ++(0,-8mm) coordinate (split);
+% % Распределение от split к трем проверкам
+% \draw[arr] (split) -| (pde.north);
+% \draw[arr] (split) -| (bc.north);
+% \draw[arr] (split) -| (ic.north);
 
-% Распределение от split к трем проверкам
-\draw[arr] (split) -| (pde.north);
-\draw[arr] (split) -| (bc.north);
-\draw[arr] (split) -| (ic.north);
+% % --- Стрелки от проверок к Loss (сходятся в одну точку) ---
+% \draw[arr] (pde.south) |- (L.west);
+% \draw[arr] (bc.south) -- (L.north);
+% \draw[arr] (ic.south) |- (L.east);
 
-% --- Стрелки от проверок к Loss (сходятся в одну точку) ---
-\draw[arr] (pde.south) |- (L.west);
-\draw[arr] (bc.south) -- (L.north);
-\draw[arr] (ic.south) |- (L.east);
+% % --- Стрелка: Loss -> Adam ---
+% \draw[arr] (L) -- (opt);
 
-% --- Стрелка: Loss -> Adam ---
-\draw[arr] (L) -- (opt);
+% % --- Обратная связь (цикл) ---
+% \draw[arr, dashed] (opt.west) -| ($(in.south) + (0,-10mm)$) -- (in.south);
+% \node[font=\scriptsize, below=1mm of opt] {повтор $N=1000$ эпох};
 
-% --- Обратная связь (цикл) ---
-\draw[arr, dashed] (opt.west) -| ($(in.south) + (0,-10mm)$) -- (in.south);
-\node[font=\scriptsize, below=1mm of opt] {повтор $N=1000$ эпох};
-
-\end{tikzpicture}
-\caption{Схема работы PINN для уравнения пьезопроводности (Нейман)}
-\label{fig:pinn_scheme2}
-\end{figure}
+% \end{tikzpicture}
+% \caption{Схема работы PINN для уравнения пьезопроводности (Нейман)}
+% \label{fig:pinn_scheme2}
+% \end{figure}
 
 % Для приближённого решения уравнения пьезопроводности оно заменяется разностным аналогом. Отрезок \([0, L]\) разбивается на \(N_x\) точек с постоянным шагом \(\Delta x\), а время — на интервалы длиной \(\Delta t\). Значения давления в узлах сетки вычисляются по явной формуле:
 % \begin{equation}
@@ -717,44 +706,43 @@
     \end{tabular}
 \end{table}
 
+% \begin{figure}[H]
+%     \centering
+%     \input{plot_data_neumann.tex}
+%     \caption{Изменение давления вдоль пласта с течением времени (условия Неймана)}
+%     \label{fig:pressure_evolution_neumann}
+% \end{figure}
 
-\begin{figure}[H]
-    \centering
-    \input{plot_data_neumann.tex}
-    \caption{Изменение давления вдоль пласта с течением времени (условия Неймана)}
-    \label{fig:pressure_evolution_neumann}
-\end{figure}
-
-\begin{table}[H]
-    \centering
-    \caption{Значения функции потерь в процессе обучения (условия Неймана)}
-    \label{tab:loss_history_neumann}
-    \renewcommand{\arraystretch}{1.2}
-    \begin{tabular}{|c|c|}
-        \hline
-        \textbf{Эпоха} & \textbf{Значение функции потерь} \\ \hline
-        0   & 0.6884180307388306 \\ \hline
-        50  & 0.24594488739967346 \\ \hline
-        100 & 0.19929397106170654 \\ \hline
-        150 & 0.15299013257026672 \\ \hline
-        200 & 0.12453116476535797 \\ \hline
-        250 & 0.10243511199951172 \\ \hline
-        300 & 0.09744586050510406 \\ \hline
-        350 & 0.08381001651287079 \\ \hline
-        400 & 0.06674210727214813 \\ \hline
-        450 & 0.0562947541475296 \\ \hline
-        500 & 0.04935195669531822 \\ \hline
-        550 & 0.03530285507440567 \\ \hline
-        600 & 0.028342798352241516 \\ \hline
-        650 & 0.02066729962825775 \\ \hline
-        700 & 0.017678864300251007 \\ \hline
-        750 & 0.013780687004327774 \\ \hline
-        800 & 0.01045183278620243 \\ \hline
-        850 & 0.009391210973262787 \\ \hline
-        900 & 0.007619895972311497 \\ \hline
-        950 & 0.00498774740844965 \\ \hline
-    \end{tabular}
-\end{table}
+% \begin{table}[H]
+%     \centering
+%     \caption{Значения функции потерь в процессе обучения (условия Неймана)}
+%     \label{tab:loss_history_neumann}
+%     \renewcommand{\arraystretch}{1.2}
+%     \begin{tabular}{|c|c|}
+%         \hline
+%         \textbf{Эпоха} & \textbf{Значение функции потерь} \\ \hline
+%         0   & 0.6884180307388306 \\ \hline
+%         50  & 0.24594488739967346 \\ \hline
+%         100 & 0.19929397106170654 \\ \hline
+%         150 & 0.15299013257026672 \\ \hline
+%         200 & 0.12453116476535797 \\ \hline
+%         250 & 0.10243511199951172 \\ \hline
+%         300 & 0.09744586050510406 \\ \hline
+%         350 & 0.08381001651287079 \\ \hline
+%         400 & 0.06674210727214813 \\ \hline
+%         450 & 0.0562947541475296 \\ \hline
+%         500 & 0.04935195669531822 \\ \hline
+%         550 & 0.03530285507440567 \\ \hline
+%         600 & 0.028342798352241516 \\ \hline
+%         650 & 0.02066729962825775 \\ \hline
+%         700 & 0.017678864300251007 \\ \hline
+%         750 & 0.013780687004327774 \\ \hline
+%         800 & 0.01045183278620243 \\ \hline
+%         850 & 0.009391210973262787 \\ \hline
+%         900 & 0.007619895972311497 \\ \hline
+%         950 & 0.00498774740844965 \\ \hline
+%     \end{tabular}
+% \end{table}
 
 % Решение данной задачи описывает процесс перераспределения давления в пласте. В начальный момент времени давление внутри пласта равно нулю. За счет разности давлений на границах (слева \(p=1\), справа \(p=0\)) начинается фильтрация жидкости. С течением времени профиль давления эволюционирует и выходит на стационарный линейный режим. Эволюция профиля давления схематично представлена на рисунке \ref{fig:pressure_evolution}.
 
